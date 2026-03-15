@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Tagesbudget-Rechner</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Apple Mobile Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Budget">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="current-date"></h1>
+        </header>
+
+        <main>
+            <section class="results">
+                <div class="result-card highlight">
+                    <span class="label">Budget pro Tag</span>
+                    <span id="daily-budget" class="value">€ 0.00</span>
+                </div>
+                <div id="savings-display" class="result-card" style="display: none; border: 2px solid #34c759; margin-top: 0;">
+                    <span class="label">Aktuelles Spar-Budget</span>
+                    <span id="accumulated-budget" class="value">€ 0.00</span>
+                    <span id="daily-savings-rate" style="font-size: 14px; font-weight: 600; color: #34c759; margin-top: 2px;">(+ € 0.00 / Tag)</span>
+                </div>
+                <div id="current-amount-display" style="display: none; background-color: white; border: 2px solid #ff9500; border-radius: 12px; margin-top: 0; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <span style="font-size: 13px; color: var(--secondary-text); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px;">Restlicher Gesamtbetrag</span>
+                    <span id="display-budget-amount" style="font-size: 32px; font-weight: 700; color: var(--text-color);">€ 0.00</span>
+                </div>
+                <button id="open-expense-modal-btn" style="display: none; background-color: #ff9500; width: 100%; margin-top: 0; justify-content: center; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; padding: 18px;">
+                    <span>+</span> Ausgabe hinzufügen
+                </button>
+            </section>
+
+            <section class="action-buttons" style="margin-top: 8px;">
+                <button id="open-more-modal-btn" style="background-color: #8e8e93; width: 100%; font-size: 16px; font-weight: 600; padding: 18px;">
+                    Menü
+                </button>
+            </section>
+
+            <!-- Sonstiges Modal -->
+            <div id="more-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Menü</h2>
+                    </div>
+                    <div class="modal-body" style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+                        <button id="show-history-btn" style="background-color: #af52de; padding: 18px; margin-top: 0;">Verlauf</button>
+                        <button id="show-days-btn" style="background-color: #5856d6; padding: 18px; margin-top: 0;">Verbleibende Tage</button>
+                        <button id="open-budget-modal-btn" style="background-color: var(--primary-color); padding: 18px; margin-top: 0;">Kontostand (€)</button>
+                        <button id="reset-savings-btn" style="background-color: #34c759; padding: 18px; margin-top: 0;">Sparen zurücksetzen</button>
+                        <button id="reset-btn" style="background-color: #ff3b30; padding: 18px; margin-top: 0;">Alles zurücksetzen</button>
+                    </div>
+                    <div class="modal-footer" style="margin-top: 8px;">
+                        <button id="close-more-modal-btn" style="background-color: #c7c7cc; color: #1c1c1e; padding: 18px; margin-top: 0;">Schließen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Modal -->
+            <div id="budget-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 style="color: var(--primary-color);">Betrag ändern</h2>
+                    </div>
+                    
+                    <div class="modal-input-group">
+                        <label for="budget-input">Verfügbarer Betrag (€)</label>
+                        <input type="number" id="budget-input" inputmode="decimal" placeholder="0.00" step="0.01">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button id="close-budget-modal-btn" style="background-color: #8e8e93; font-size: 16px; font-weight: 600; padding: 18px;">Abbrechen</button>
+                        <button id="calculate-btn" style="font-size: 16px; font-weight: 600; padding: 18px;">Berechnen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ausgaben Modal -->
+            <div id="expense-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 style="color: #ff9500;">Ausgabe hinzufügen</h2>
+                    </div>
+                    
+                    <div class="modal-input-group">
+                        <label for="expense-title">Titel (optional)</label>
+                        <input type="text" id="expense-title" placeholder="z.B. Supermarkt">
+                    </div>
+                    
+                    <div class="modal-input-group">
+                        <label for="expense-input">Betrag (€)</label>
+                        <input type="number" id="expense-input" inputmode="decimal" placeholder="0.00" step="0.01">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button id="close-expense-modal-btn" style="background-color: #8e8e93; font-size: 16px; font-weight: 600; padding: 18px;">Abbrechen</button>
+                        <button id="add-expense-btn" style="background-color: #ff9500; font-size: 16px; font-weight: 600; padding: 18px;">Abziehen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verlauf Modal/Overlay -->
+            <div id="history-modal" class="modal-overlay">
+                <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h2>Verlauf</h2>
+                    </div>
+                    <ul id="history-list" style="list-style: none; padding: 0;"></ul>
+                    <div class="modal-footer">
+                        <button id="close-history-btn" style="width: 100%; font-size: 16px; font-weight: 600; padding: 18px;">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
